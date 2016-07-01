@@ -8,12 +8,16 @@ defmodule CpfValidator do
 
     children = [
       # Define workers and child supervisors to be supervised
-      # worker(CpfValidator.Worker, [arg1, arg2, arg3]),
+      worker(__MODULE__, [], function: :start_service),
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: CpfValidator.Supervisor]
     Supervisor.start_link(children, opts)
+  end
+
+  def start_service() do
+    {:ok, _} = Plug.Adapters.Cowboy.http(CpfValidator.Router, [])
   end
 end
